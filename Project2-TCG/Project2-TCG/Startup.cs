@@ -9,6 +9,10 @@ using Microsoft.Extensions.Hosting;
 using Project2_TCG.Models;
 using Project2_TCG.Models.Entities;
 using System.Diagnostics;
+using System;
+using System.Reflection;
+using System.IO;
+using Microsoft.OpenApi.Models;
 
 namespace Project2_TCG
 {
@@ -39,7 +43,6 @@ namespace Project2_TCG
 
             services.AddControllersWithViews();
             // In production, the Angular files will be served from this directory
-
             services.AddDbContext<cardgameContext>(
                 options => options.UseSqlServer("name=ConnectionStrings:petadmin").LogTo(message => Debug.WriteLine(message))
             );
@@ -50,6 +53,36 @@ namespace Project2_TCG
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+            // Register the Swagger generator, defining 1 or more Swagger documents
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "TCG.WebApi", Version = "v1" });
+                var securitySchema = new OpenApiSecurityScheme
+                {
+                    Description = "Using the Authorization header with the Bearer scheme.",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                };
+
+                c.AddSecurityDefinition("Bearer", securitySchema);
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    { securitySchema, new[] { "Bearer" } }
+                });
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +91,8 @@ namespace Project2_TCG
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TCG.WebApi V1"));
             }
             else
             {
