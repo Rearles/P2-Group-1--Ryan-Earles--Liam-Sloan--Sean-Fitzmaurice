@@ -106,6 +106,7 @@ namespace Project2_TCG.Controllers
         {
             _cardRepo.UpdateUserCurrency(user, currency, plusminus);
         }
+        [HttpGet("{Card}")]
         public Card getrandomcard(int id)
         {
             return _cardRepo.GetRandomCardofRarity(id);
