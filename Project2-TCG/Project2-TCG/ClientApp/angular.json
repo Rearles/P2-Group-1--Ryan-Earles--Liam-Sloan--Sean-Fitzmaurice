@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "1da3687d-c654-4413-a75d-78af00866493"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -130,6 +133,5 @@
         }
       }
     }
-  },
-  "defaultProject": "Project2_TCG"
+  }
 }
