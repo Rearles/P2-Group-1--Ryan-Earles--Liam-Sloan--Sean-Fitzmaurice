@@ -54,7 +54,7 @@ import { RulesComponent } from './rules/rules.component';
       { path: 'deck', component: DeckComponent },
       { path: 'result', component: ResultComponent },
       { path: 'rules', component: RulesComponent },
-], { relativeLinkResolution: 'legacy' })
+], {})
   ],
   providers: [Card, LoginComponent, LoginHeaderComponent, RegisterComponent, DeckService, ResultService],
 
